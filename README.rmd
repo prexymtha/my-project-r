@@ -1,24 +1,41 @@
----
-output:
-  md_document:
-    variant: markdown_github
----
-
-# Purpose
-
-Purpose of this work folder.
-
-Ideally store a minimum working example data set in data folder.
-
-Add binary files in bin, and closed R functions in code. Human Readable settings files (e.g. csv) should be placed in settings/
-
-
 ```{r}
+# Install and load required packages
+if (!require("pacman", quietly = TRUE)) {
+  install.packages("pacman")
+  library(pacman)
+}
 
-rm(list = ls()) # Clean your environment:
-gc() # garbage collection - It can be useful to call gc after a large object has been removed, as this may prompt R to return memory to the operating system.
-library(tidyverse)
-list.files('code/', full.names = T, recursive = T) %>% .[grepl('.R', .)] %>% as.list() %>% walk(~source(.))
+p_load(fredr, tidyverse)
+
+# Set your FRED API key
+fredr_set_key("605ebe942e732ed6557666cc5a417533")
+
+# Fetch US unemployment rate and CPI data
+unrate <- fredr(series_id = "UNRATE", observation_start = as.Date("2000-01-01"))
+cpi <- fredr(series_id = "CPIAUCSL", observation_start = as.Date("2000-01-01"))
+
+# Plot 1: Unemployment rate over time
+p1 <- ggplot(unrate, aes(x = date, y = value)) +
+  geom_line(color = "steelblue") +
+  labs(title = "US Unemployment Rate", y = "Percent", x = "Year") +
+  theme_minimal()
+
+# Plot 2: CPI Inflation year-over-year
+cpi_yoy <- cpi %>%
+  arrange(date) %>%
+  mutate(inflation = (value / lag(value, 12) - 1) * 100)
+
+p2 <- ggplot(cpi_yoy, aes(x = date, y = inflation)) +
+  geom_line(color = "darkred") +
+  labs(title = "US CPI Inflation (YoY %)", y = "Percent", x = "Year") +
+  theme_minimal()
+
+# Display plots
+print(p1)
+print(p2)
+
+# Save plots
+ggsave("unemployment.png", p1, width = 8, height = 5)
+ggsave("inflation.png", p2, width = 8, height = 5)
 ```
-
 
