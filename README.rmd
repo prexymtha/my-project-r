@@ -1,5 +1,5 @@
 ```{r}
-# Install and load required packages
+# Installing packages "pacman"
 if (!require("pacman", quietly = TRUE)) {
   install.packages("pacman")
   library(pacman)
@@ -7,10 +7,10 @@ if (!require("pacman", quietly = TRUE)) {
 
 p_load(fredr, tidyverse)
 
-# Set your FRED API key
+# Setting API key --FRED
 fredr_set_key("605ebe942e732ed6557666cc5a417533")
 
-# Fetch US unemployment rate and CPI data
+# Will use US unemployment rate and CPI data
 unrate <- fredr(series_id = "UNRATE", observation_start = as.Date("2000-01-01"))
 cpi <- fredr(series_id = "CPIAUCSL", observation_start = as.Date("2000-01-01"))
 
