@@ -8,7 +8,7 @@ if (!require("pacman", quietly = TRUE)) {
 p_load(fredr, tidyverse)
 
 # Setting API key --FRED
-fredr_set_key("605ebe942e732ed6557666cc5a417533")
+fredr_set_key("605ebe942e732ed6557666cc5a417533") # you should make your API key public
 
 # Will use US unemployment rate and CPI data
 unrate <- fredr(series_id = "UNRATE", observation_start = as.Date("2000-01-01"))
